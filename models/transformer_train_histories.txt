@@ -1,0 +1,13 @@
+version=v1, seed=42, best_epochs=7, auc=0.9995
+d_model=256, num_heads=8, num_layers=2, dim_feedforward=256
+tl_dropout=0.3, nn_dropout=0.5, lr=0.0001
+              precision    recall  f1-score   support
+
+           0     0.9895    0.9920    0.9908      8863
+           1     0.9920    0.9895    0.9907      8863
+
+    accuracy                         0.9907     17726
+   macro avg     0.9908    0.9907    0.9907     17726
+weighted avg     0.9908    0.9907    0.9907     17726
+
+---------------------------------------------------------------------------

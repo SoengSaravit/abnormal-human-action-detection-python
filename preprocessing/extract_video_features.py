@@ -29,7 +29,7 @@ def extract_video_features(video_path, model, preprocess, device):
         return None
 
     # Process frames in smaller batches to avoid GPU memory overflow
-    batch_size = 32  # Adjust batch size based on your GPU memory
+    batch_size = 64  # Adjust batch size based on your GPU memory
     video_features = []
 
     for i in range(0, len(frames), batch_size):
