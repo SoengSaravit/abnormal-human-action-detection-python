@@ -1,5 +1,4 @@
 import sys
-from xml.parsers.expat import model
 sys.path.append('..')
 
 import cv2
@@ -11,15 +10,30 @@ import datetime
 import time
 import clip
 from PIL import Image
+import timm
+import torchvision.transforms as transforms
 
 
 class AbnormalActionDetector():
-    def __init__(self, model_path, window_size=30, abnormal_threshold=0.25):
+    def __init__(self, model_path, window_size=30, lag_sampling=1, abnormal_threshold=0.25, image_encoder_type='clip'):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.clip_model, self.clip_preprocess = clip.load("ViT-B/32", device=self.device)
+        self.image_encoder_type = image_encoder_type
+        if self.image_encoder_type == 'clip':
+            self.model, self.preprocess = clip.load("ViT-B/32", device=self.device)
+        elif self.image_encoder_type == 'vit':
+            self.model = timm.create_model("vit_base_patch16_224", pretrained=True).to(self.device)
+            self.model.reset_classifier(0)
+            self.preprocess = transforms.Compose([
+                transforms.Resize((224, 224)),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=(0.5, 0.5, 0.5),
+                                    std=(0.5, 0.5, 0.5))
+            ])
         self.cls_model = torch.load(model_path)
-        self.frame_histories = deque(maxlen=window_size)
         self.window_size = window_size
+        self.lag_sampling = lag_sampling
+        self.effective_window_size = int(window_size / lag_sampling)
+        self.frame_histories = deque(maxlen=self.effective_window_size)
         self.classes = ["abnormal", "normal"]
         self.abnormal_threshold = abnormal_threshold
     
@@ -51,19 +65,22 @@ class AbnormalActionDetector():
             if not ret:
                 break
             
-            # Skip frame to improve performance to get only 10 fps from 30 fps video
-            if frame_count % 3 == 0:
-                self.frame_histories.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                if len(self.frame_histories) == self.window_size:
-                    input_tensors = torch.stack([self.clip_preprocess(Image.fromarray(frame)).to(self.device) for frame in self.frame_histories])
-
+            # Sample one frame every 'lag_sampling' frames
+            if frame_count % self.lag_sampling == 0:
+                image = self.preprocess(Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))).unsqueeze(0).to(self.device)
+                with torch.no_grad():
+                    image_features = self.model.encode_image(image) if self.image_encoder_type == 'clip' else self.model(image)
+                self.frame_histories.append(image_features)
+                
+                if len(self.frame_histories) == self.effective_window_size:
                     with torch.no_grad():
-                        batch_features = self.clip_model.encode_image(input_tensors)
-                        X = batch_features.clone().detach().float().view(1, self.window_size, 512).to(self.device)
+                        X = torch.stack(list(self.frame_histories), dim=0)
+                        X = X.float().view(1, self.effective_window_size, 512 if self.image_encoder_type == 'clip' else 768).to(self.device)
                         outputs = self.cls_model(X)
-                        probs = torch.sigmoid(outputs).cpu().numpy()
-                        conf_prob = probs[0] if probs[0] > 0.5 else 1 - probs[0]
-                        y_pred = probs[0].round()
+                        probs = torch.softmax(outputs, dim=1)
+                        conf_prob = torch.max(probs).cpu().numpy()
+                        y_pred = torch.argmax(probs, dim=1).cpu().numpy()
+                        y_pred = y_pred[0]
                         
                         # check if the confidence and prediction is not NaN
                         if not np.isnan([conf_prob, y_pred]).all():
@@ -88,7 +105,7 @@ class AbnormalActionDetector():
                         
             frame_count += 1
             # Draw the prediction text
-            if len(self.frame_histories) >= self.window_size:
+            if len(self.frame_histories) >= self.effective_window_size:
                 cv2.rectangle(frame, (0, 0), (350, 30), alert_color, -1)
                 cv2.putText(frame, f"Prediction: {majority_class}, Confidence: {confidence:.2f}%", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
             
@@ -98,13 +115,14 @@ class AbnormalActionDetector():
             # if time_diff > 0:
             #     fps = 1 / time_diff
             # previous_time = current_time
+            
             # Calculate average FPS
             if frame_count > 0 and (current_time - st) > 0:
                 avg_fps = frame_count / (current_time - st)
             else:
-                avg_fps = 0
+                avg_fps = avg_fps if 'avg_fps' in locals() else 0
 
-            cv2.putText(frame, f"FPS: {avg_fps:.2f}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            cv2.putText(frame, f"FPS: {avg_fps:.2f}", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
 
             if is_save_result:
                 out.write(frame)
