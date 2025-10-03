@@ -270,3 +270,255 @@ image_encoder_type=clip, input_shape=(8, 512)
 weighted avg     0.9904    0.9903    0.9903     20000
 
 ---------------------------------------------------------------------------
+version=v4, best_epochs=19, auc=0.9995
+d_model=128, num_heads=8, num_layers=2, dim_feedforward=512
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(24, 512)
+              precision    recall  f1-score   support
+
+           0     0.9912    0.9944    0.9928      2500
+           1     0.9944    0.9912    0.9928      2500
+
+    accuracy                         0.9928      5000
+   macro avg     0.9928    0.9928    0.9928      5000
+weighted avg     0.9928    0.9928    0.9928      5000
+
+---------------------------------------------------------------------------
+version=v4, best_epochs=53, auc=0.9995
+d_model=64, num_heads=8, num_layers=2, dim_feedforward=128
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(24, 512)
+              precision    recall  f1-score   support
+
+           0     0.9869    0.9944    0.9906      2500
+           1     0.9944    0.9868    0.9906      2500
+
+    accuracy                         0.9906      5000
+   macro avg     0.9906    0.9906    0.9906      5000
+weighted avg     0.9906    0.9906    0.9906      5000
+
+---------------------------------------------------------------------------
+version=v4, best_epochs=44, auc=0.9994
+d_model=64, num_heads=8, num_layers=2, dim_feedforward=64
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(24, 512)
+              precision    recall  f1-score   support
+
+           0     0.9881    0.9928    0.9904      2500
+           1     0.9928    0.9880    0.9904      2500
+
+    accuracy                         0.9904      5000
+   macro avg     0.9904    0.9904    0.9904      5000
+weighted avg     0.9904    0.9904    0.9904      5000
+
+---------------------------------------------------------------------------
+version=v4, best_epochs=8, auc=0.9995
+d_model=64, num_heads=8, num_layers=3, dim_feedforward=64
+tl_dropout=0.3, nn_dropout=0.3, lr=0.0001
+image_encoder_type=clip, input_shape=(24, 512)
+              precision    recall  f1-score   support
+
+           0     0.9834    0.9944    0.9889      2500
+           1     0.9943    0.9832    0.9887      2500
+
+    accuracy                         0.9888      5000
+   macro avg     0.9889    0.9888    0.9888      5000
+weighted avg     0.9889    0.9888    0.9888      5000
+
+---------------------------------------------------------------------------
+version=v4, best_epochs=49, auc=0.9993
+d_model=64, num_heads=4, num_layers=2, dim_feedforward=64
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(24, 512)
+              precision    recall  f1-score   support
+
+           0     0.9936    0.9932    0.9934      2500
+           1     0.9932    0.9936    0.9934      2500
+
+    accuracy                         0.9934      5000
+   macro avg     0.9934    0.9934    0.9934      5000
+weighted avg     0.9934    0.9934    0.9934      5000
+
+---------------------------------------------------------------------------
+version=v4, best_epochs=10, auc=0.9992
+d_model=128, num_heads=8, num_layers=2, dim_feedforward=128
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(24, 512)
+              precision    recall  f1-score   support
+
+           0     0.9964    0.9926    0.9945      5000
+           1     0.9926    0.9964    0.9945      5000
+
+    accuracy                         0.9945     10000
+   macro avg     0.9945    0.9945    0.9945     10000
+weighted avg     0.9945    0.9945    0.9945     10000
+
+---------------------------------------------------------------------------
+version=v4, best_epochs=12, auc=0.9991
+d_model=64, num_heads=8, num_layers=2, dim_feedforward=64
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(24, 512)
+              precision    recall  f1-score   support
+
+           0     0.9912    0.9926    0.9919      5000
+           1     0.9926    0.9912    0.9919      5000
+
+    accuracy                         0.9919     10000
+   macro avg     0.9919    0.9919    0.9919     10000
+weighted avg     0.9919    0.9919    0.9919     10000
+
+---------------------------------------------------------------------------
+version=v4, best_epochs=22, auc=0.9991
+d_model=32, num_heads=8, num_layers=2, dim_feedforward=64
+tl_dropout=0.3, nn_dropout=0.5, lr=1e-05
+image_encoder_type=clip, input_shape=(24, 512)
+              precision    recall  f1-score   support
+
+           0     0.9885    0.9928    0.9906      5000
+           1     0.9928    0.9884    0.9906      5000
+
+    accuracy                         0.9906     10000
+   macro avg     0.9906    0.9906    0.9906     10000
+weighted avg     0.9906    0.9906    0.9906     10000
+
+---------------------------------------------------------------------------
+version=v5, best_epochs=52, auc=0.9988
+d_model=32, num_heads=8, num_layers=2, dim_feedforward=64
+tl_dropout=0.3, nn_dropout=0.5, lr=1e-05
+image_encoder_type=clip, input_shape=(30, 512)
+              precision    recall  f1-score   support
+
+           0     0.9930    0.9922    0.9926      5000
+           1     0.9922    0.9930    0.9926      5000
+
+    accuracy                         0.9926     10000
+   macro avg     0.9926    0.9926    0.9926     10000
+weighted avg     0.9926    0.9926    0.9926     10000
+
+---------------------------------------------------------------------------
+version=v5, best_epochs=30, auc=0.9994
+d_model=64, num_heads=8, num_layers=2, dim_feedforward=128
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(30, 512)
+              precision    recall  f1-score   support
+
+           0     0.9956    0.9944    0.9950      2500
+           1     0.9944    0.9956    0.9950      2500
+
+    accuracy                         0.9950      5000
+   macro avg     0.9950    0.9950    0.9950      5000
+weighted avg     0.9950    0.9950    0.9950      5000
+
+---------------------------------------------------------------------------
+version=v5, best_epochs=33, auc=0.9997
+d_model=64, num_heads=8, num_layers=2, dim_feedforward=128
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(30, 512)
+              precision    recall  f1-score   support
+
+           0     0.9901    0.9968    0.9934      2500
+           1     0.9968    0.9900    0.9934      2500
+
+    accuracy                         0.9934      5000
+   macro avg     0.9934    0.9934    0.9934      5000
+weighted avg     0.9934    0.9934    0.9934      5000
+
+---------------------------------------------------------------------------
+version=v5, best_epochs=23, auc=0.9997
+d_model=64, num_heads=8, num_layers=2, dim_feedforward=128
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(30, 512)
+              precision    recall  f1-score   support
+
+           0     0.9908    0.9960    0.9934      2500
+           1     0.9960    0.9908    0.9934      2500
+
+    accuracy                         0.9934      5000
+   macro avg     0.9934    0.9934    0.9934      5000
+weighted avg     0.9934    0.9934    0.9934      5000
+
+---------------------------------------------------------------------------
+version=v5, best_epochs=16, auc=0.9997
+d_model=128, num_heads=8, num_layers=2, dim_feedforward=256
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(30, 512)
+              precision    recall  f1-score   support
+
+           0     0.9834    0.9972    0.9903      2500
+           1     0.9972    0.9832    0.9901      2500
+
+    accuracy                         0.9902      5000
+   macro avg     0.9903    0.9902    0.9902      5000
+weighted avg     0.9903    0.9902    0.9902      5000
+
+---------------------------------------------------------------------------
+version=v5, best_epochs=8, auc=0.9997
+d_model=256, num_heads=8, num_layers=2, dim_feedforward=512
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(30, 512)
+              precision    recall  f1-score   support
+
+           0     0.9916    0.9960    0.9938      2500
+           1     0.9960    0.9916    0.9938      2500
+
+    accuracy                         0.9938      5000
+   macro avg     0.9938    0.9938    0.9938      5000
+weighted avg     0.9938    0.9938    0.9938      5000
+
+---------------------------------------------------------------------------
+version=v5, best_epochs=None, auc=0.9997
+d_model=256, num_heads=8, num_layers=2, dim_feedforward=512
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(30, 512)
+              precision    recall  f1-score   support
+
+           0     0.9830    0.9960    0.9895      2500
+           1     0.9959    0.9828    0.9893      2500
+
+    accuracy                         0.9894      5000
+   macro avg     0.9895    0.9894    0.9894      5000
+weighted avg     0.9895    0.9894    0.9894      5000
+
+---------------------------------------------------------------------------
+version=v5, best_epochs=8, auc=0.9998
+d_model=512, num_heads=8, num_layers=2, dim_feedforward=1024
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(30, 512)
+              precision    recall  f1-score   support
+
+           0     0.9838    0.9972    0.9905      2500
+           1     0.9972    0.9836    0.9903      2500
+
+    accuracy                         0.9904      5000
+   macro avg     0.9905    0.9904    0.9904      5000
+weighted avg     0.9905    0.9904    0.9904      5000
+
+---------------------------------------------------------------------------
+version=v5, best_epochs=6, auc=0.9998
+d_model=512, num_heads=16, num_layers=2, dim_feedforward=512
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(30, 512)
+              precision    recall  f1-score   support
+
+           0     0.9900    0.9948    0.9924      2500
+           1     0.9948    0.9900    0.9924      2500
+
+    accuracy                         0.9924      5000
+   macro avg     0.9924    0.9924    0.9924      5000
+weighted avg     0.9924    0.9924    0.9924      5000
+
+---------------------------------------------------------------------------
+version=v5, best_epochs=10, auc=0.9997
+d_model=256, num_heads=16, num_layers=2, dim_feedforward=256
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-05
+image_encoder_type=clip, input_shape=(30, 512)
+              precision    recall  f1-score   support
+
+           0     0.9889    0.9956    0.9922      2500
+           1     0.9956    0.9888    0.9922      2500
+
+    accuracy                         0.9922      5000
+   macro avg     0.9922    0.9922    0.9922      5000
+weighted avg     0.9922    0.9922    0.9922      5000
+
+---------------------------------------------------------------------------

@@ -33,7 +33,7 @@ class AbnormalActionDetector():
         self.window_size = window_size
         self.lag_sampling = lag_sampling
         self.effective_window_size = int(window_size / lag_sampling)
-        self.frame_histories = deque(maxlen=self.effective_window_size)
+        self.frame_histories = deque(maxlen=self.window_size)
         self.classes = ["abnormal", "normal"]
         self.abnormal_threshold = abnormal_threshold
     
@@ -49,7 +49,6 @@ class AbnormalActionDetector():
         video_fps = int(cap.get(cv2.CAP_PROP_FPS))
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-        previous_time = 0
         current_time = 0
 
         st = time.time()
@@ -65,58 +64,52 @@ class AbnormalActionDetector():
             if not ret:
                 break
             
-            # Sample one frame every 'lag_sampling' frames
-            if frame_count % self.lag_sampling == 0:
-                image = self.preprocess(Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))).unsqueeze(0).to(self.device)
-                with torch.no_grad():
-                    image_features = self.model.encode_image(image) if self.image_encoder_type == 'clip' else self.model(image)
-                self.frame_histories.append(image_features)
+            image = self.preprocess(Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))).unsqueeze(0).to(self.device)
+            with torch.no_grad():
+                image_features = self.model.encode_image(image) if self.image_encoder_type == 'clip' else self.model(image)
+            self.frame_histories.append(image_features)
                 
-                if len(self.frame_histories) == self.effective_window_size:
-                    with torch.no_grad():
-                        X = torch.stack(list(self.frame_histories), dim=0)
-                        X = X.float().view(1, self.effective_window_size, 512 if self.image_encoder_type == 'clip' else 768).to(self.device)
-                        outputs = self.cls_model(X)
-                        probs = torch.softmax(outputs, dim=1)
-                        conf_prob = torch.max(probs).cpu().numpy()
-                        y_pred = torch.argmax(probs, dim=1).cpu().numpy()
-                        y_pred = y_pred[0]
-                        
-                        # check if the confidence and prediction is not NaN
-                        if not np.isnan([conf_prob, y_pred]).all():
-                            # Append the confidence and class to the respective class
-                            y_pred = int(y_pred)
-                            pred_classes = np.append(pred_classes, y_pred)
-                            pred_confs[y_pred].append(conf_prob)
-                        
-                        # Determine the most frequent predicted class so far
-                        # check if there are any predictions
-                        if len(pred_classes) > 0:
-                            unique, counts = np.unique(pred_classes, return_counts=True)
+            if len(self.frame_histories) == self.window_size:
+                with torch.no_grad():
+                    indices = np.linspace(0, self.window_size-1, self.effective_window_size, dtype=int)
+                    input_tensors = [list(self.frame_histories)[i] for i in indices]
+                    X = torch.stack(input_tensors, dim=0)
+                    X = X.float().view(1, self.effective_window_size, 512 if self.image_encoder_type == 'clip' else 768).to(self.device)
+                    outputs = self.cls_model(X)
+                    probs = torch.softmax(outputs, dim=1)
+                    conf_prob = torch.max(probs).cpu().numpy()
+                    y_pred = torch.argmax(probs, dim=1).cpu().numpy()
+                    y_pred = y_pred[0]
+                    
+                    # check if the confidence and prediction is not NaN
+                    if not np.isnan([conf_prob, y_pred]).all():
+                        # Append the confidence and class to the respective class
+                        y_pred = int(y_pred)
+                        pred_classes = np.append(pred_classes, y_pred)
+                        pred_confs[y_pred].append(conf_prob)
+                    
+                    # Determine the most frequent predicted class so far
+                    # check if there are any predictions
+                    if len(pred_classes) > 0:
+                        unique, counts = np.unique(pred_classes, return_counts=True)
                         # check if counts of abnormal class is greater than the threshold
-                            if len(unique) == 1:
-                                majority_class_index = int(unique[0]) # this means there is only one class detected
-                            else:
-                                majority_class_index = 0 if counts[0]/np.sum(counts) > self.abnormal_threshold else 1
-                            majority_class = self.classes[majority_class_index]
-                            confidence = np.mean(pred_confs[majority_class_index]) * 100
-                            
-                            alert_color = (0, 0, 255) if majority_class_index == 0 else (0, 150, 0) # Red for abnormal, Green for normal
+                        if len(unique) == 1:
+                            majority_class_index = int(unique[0]) # this means there is only one class detected
+                        else:
+                            majority_class_index = 0 if counts[0]/np.sum(counts) > self.abnormal_threshold else 1
+                        majority_class = self.classes[majority_class_index]
+                        confidence = np.mean(pred_confs[majority_class_index]) * 100
+                        
+                        alert_color = (0, 0, 255) if majority_class_index == 0 else (0, 150, 0) # Red for abnormal, Green for normal
                         
             frame_count += 1
             # Draw the prediction text
-            if len(self.frame_histories) >= self.effective_window_size:
+            if len(self.frame_histories) >= self.window_size:
                 cv2.rectangle(frame, (0, 0), (350, 30), alert_color, -1)
                 cv2.putText(frame, f"Prediction: {majority_class}, Confidence: {confidence:.2f}%", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
             
-            # Calculate real-time FPS
-            current_time = time.time()
-            # time_diff = current_time - previous_time
-            # if time_diff > 0:
-            #     fps = 1 / time_diff
-            # previous_time = current_time
-            
             # Calculate average FPS
+            current_time = time.time()
             if frame_count > 0 and (current_time - st) > 0:
                 avg_fps = frame_count / (current_time - st)
             else:
@@ -144,8 +137,8 @@ class AbnormalActionDetector():
         return None
     
 
-    # function for detecting abnormal gait by producing prediction class and confidence
-    def get_abnormal_action_detection_results(self, source, classes=[0], conf=0.5):
+    # function for detecting abnormal action by producing prediction class and confidence
+    def get_abnormal_action_detection_results(self, source):
         pred_classes = np.array([])
         pred_confs = {0: [], 1: []}
 
@@ -156,47 +149,48 @@ class AbnormalActionDetector():
         majority_class_index = None
         majority_class = None
         confidence = None
+
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
-            results = self.yolo_model.predict(frame, classes=classes, conf=conf)
-            keypoints_xyn = results[0].keypoints.xyn.cpu().numpy()
-            # If no keypoints are detected or image with multiple person, skip the image
-            if keypoints_xyn.size == 0 or len(keypoints_xyn) > 1:
-                continue
-
-            data = self._extract_pose_features(keypoints_xyn[0])
-            self.frame_histories.append(data)
+            
+            image = self.preprocess(Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))).unsqueeze(0).to(self.device)
+            with torch.no_grad():
+                image_features = self.model.encode_image(image) if self.image_encoder_type == 'clip' else self.model(image)
+            self.frame_histories.append(image_features)
+                
             if len(self.frame_histories) == self.window_size:
-                df = pd.DataFrame(self.frame_histories)
-                df.fillna(method='ffill', inplace=True)
-                frame_series = np.array(df).flatten()
-                frame_series_scaled = self.scaler.transform(frame_series.reshape(1, -1))
-                X = torch.tensor(frame_series_scaled).float().view(1, self.window_size, 9).to(torch.device('cuda'))
                 with torch.no_grad():
+                    indices = np.linspace(0, self.window_size-1, self.effective_window_size, dtype=int)
+                    input_tensors = [list(self.frame_histories)[i] for i in indices]
+                    X = torch.stack(input_tensors, dim=0)
+                    X = X.float().view(1, self.effective_window_size, 512 if self.image_encoder_type == 'clip' else 768).to(self.device)
                     outputs = self.cls_model(X)
-                    probs = torch.sigmoid(outputs).cpu().numpy()
-                    conf_prob = probs[0] if probs[0] > 0.5 else 1 - probs[0]
-                    y_pred = probs[0].round()
+                    probs = torch.softmax(outputs, dim=1)
+                    conf_prob = torch.max(probs).cpu().numpy()
+                    y_pred = torch.argmax(probs, dim=1).cpu().numpy()
+                    y_pred = y_pred[0]
+                    
                     # check if the confidence and prediction is not NaN
                     if not np.isnan([conf_prob, y_pred]).all():
                         # Append the confidence and class to the respective class
                         y_pred = int(y_pred)
                         pred_classes = np.append(pred_classes, y_pred)
                         pred_confs[y_pred].append(conf_prob)
-
+                      
         cap.release()
+        # Determine the most frequent predicted class so far
         # check if there are any predictions
         if len(pred_classes) > 0:
             unique, counts = np.unique(pred_classes, return_counts=True)
-            # check if counts of abnormal class is greater than the threshold
+        # check if counts of abnormal class is greater than the threshold
             if len(unique) == 1:
                 majority_class_index = int(unique[0]) # this means there is only one class detected
             else:
                 majority_class_index = 0 if counts[0]/np.sum(counts) > self.abnormal_threshold else 1
             majority_class = self.classes[majority_class_index]
-            confidence = np.mean(pred_confs[majority_class_index])
+            confidence = np.mean(pred_confs[majority_class_index]) * 100
 
         return majority_class_index, majority_class, confidence
     

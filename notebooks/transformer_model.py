@@ -3,7 +3,7 @@ import torch.nn as nn
 import math
 
 class PositionalEncoding(nn.Module):
-    def __init__(self, hidden_dim, max_len=120):
+    def __init__(self, hidden_dim, max_len=150):
         super(PositionalEncoding, self).__init__()
         self.pos_embed = nn.Embedding(max_len, hidden_dim)
 
@@ -40,7 +40,6 @@ class TransformerModel(nn.Module):
         x = self.positional_encoding(x)
         x = self.transformer_encoder(x)
         x = self.dropout(x)
-        # x = x[:, -1, :]
         x = x.mean(dim=1)  # Global average pooling
         x = self.fc(x)
         return x

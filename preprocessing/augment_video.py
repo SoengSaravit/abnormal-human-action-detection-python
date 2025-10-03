@@ -23,7 +23,7 @@ class VideoAugmenter:
 
     def augment_video(self, frames):
         """Applies both spatial and temporal augmentations"""
-        target_length = 120
+        target_length = 150
         if len(frames) < target_length:
             frames = self.add_frames(frames, target_length=target_length)  # Add frames if needed
         

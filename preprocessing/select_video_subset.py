@@ -8,7 +8,7 @@ events = {
 }
 
 def select_video_subset(base_path):
-    random_seed = 42
+    random_seed = 124
     video_file_names, video_actions, video_labels = [], [], []
 
     for event in events.keys():
@@ -17,8 +17,8 @@ def select_video_subset(base_path):
             print(f"Processing action: {action}")
             videos = os.listdir(os.path.join(base_path, action))
 
-            # Select 70% of videos randomly    
-            num_selected = int(len(videos) * 0.7)
+            # Select 75% of videos randomly    
+            num_selected = int(len(videos) * 0.75)
             np.random.seed(random_seed)
             selected_videos = np.random.choice(videos, size=num_selected, replace=False)
 
