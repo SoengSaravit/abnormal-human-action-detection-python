@@ -10,7 +10,7 @@ class VideoAugmenter:
         # Frame-wise augmentations (spatial)
         self.frame_transforms = [
             T.RandomHorizontalFlip(p=1.0),  # Flip left-right
-            T.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),  # Adjust colors
+            T.ColorJitter(brightness=0.25, contrast=0.25, saturation=0.2, hue=0.1),  # Adjust colors
             T.GaussianBlur(kernel_size=5, sigma=(0.1, 2.0))  # Apply blur
         ]
 
@@ -86,8 +86,13 @@ if __name__ == "__main__":
     df_video_subset_info = pd.read_csv("../datasets/video_subset_information.csv")
     abnormal_train_videos = df_video_subset_info[(df_video_subset_info['label'] == 'abnormal') & (df_video_subset_info['subset'] == 'train')]
 
-    # augement only 50% of abnormal training videos
-    abnormal_train_videos_augment = abnormal_train_videos.sample(frac=0.5, random_state=42)
+    # augement abnormal training videos
+    abnormal_train_videos_augment = pd.concat(
+        [
+            grp.sample(frac=1.0 if len(grp) < 100 else 0.5, random_state=42) for _, grp in abnormal_train_videos.groupby('action')
+        ],
+        ignore_index=True
+    )
 
     # Save augmented videos information
     df_augmented_videos = abnormal_train_videos_augment.copy()
@@ -95,6 +100,7 @@ if __name__ == "__main__":
     df_augmented_videos.to_csv("../datasets/augmented_abnormal_videos_information.csv", index=False)
 
     for index, row in abnormal_train_videos_augment.iterrows():
+        print(f'Augmenting video {index+1}/{len(abnormal_train_videos_augment)}: {row["video_file_name"]}'.ljust(200), end='\r')
         action = row['action']
         video_name = row['video_file_name']
         video_path = os.path.join(base_video_path, action, video_name)
@@ -108,4 +114,5 @@ if __name__ == "__main__":
         saved_video_name = video_name.split(".mp4")[0] + '_augmented.mp4'
         output_path = f"{base_video_path}/{action}/{saved_video_name}"
         save_video(augmented_frames, output_path, fps)
-        print(f"Augmented video saved to {output_path}")
+    
+    print(f"Augmented video completed. Total augmented videos: {len(abnormal_train_videos_augment)}")

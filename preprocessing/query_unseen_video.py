@@ -4,7 +4,7 @@ import os
 
 events = {
     "normal": ["sitting", "walking", "running", "neutral", "luggage"],
-    "abnormal": ["carcrash", "hitting", "kicking", "falling", "vandalizing", "panicking", "stealing", "murdering", "igniting"]
+    "abnormal": ["hitting", "kicking", "falling", "vandalizing", "panicking", "stealing", "murdering", "igniting"]
 }
 
 if __name__ == '__main__':

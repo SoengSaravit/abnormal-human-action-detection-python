@@ -84,15 +84,13 @@ if __name__ == "__main__":
             video_names.extend([video_name]*len(features))
             labels.extend([label]*len(features))
             subsets.extend([subset]*len(features))
-
-            print(f"[Done] Extracted features from {video_name}, shape: {features.shape}")
         except Exception as e:
             print(f"Error processing video {row['video_file_name']}: {e}")
 
     # Save dataframe to csv
     # Since dataframe can be large, save to csv without index and split into multiple files if necessary
     print(f"Saving features to csv files in chunks...")
-    chunk_size = 300000  # Adjust based on your memory constraints
+    chunk_size = 200000  # Adjust based on your memory constraints
 
     for i in range(0, len(all_video_features), chunk_size):
         df_features_chunk = pd.DataFrame(all_video_features[i:i+chunk_size])
