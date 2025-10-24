@@ -13,3 +13,123 @@ window_size=120, lag_sampling=5, sliding_stride=4
 weighted avg     0.9964    0.9964    0.9964     15000
 
 ---------------------------------------------------------------------------
+version=v2, best_epochs=40, auc=0.9996
+d_model=256, num_heads=16, num_layers=4, dim_feedforward=512
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-06
+image_encoder_type=clip, input_shape=(24, 512)
+window_size=120, lag_sampling=5, sliding_stride=4
+              precision    recall  f1-score   support
+
+         0.0     0.9939    0.9985    0.9962      7500
+         1.0     0.9985    0.9939    0.9962      7500
+
+    accuracy                         0.9962     15000
+   macro avg     0.9962    0.9962    0.9962     15000
+weighted avg     0.9962    0.9962    0.9962     15000
+
+---------------------------------------------------------------------------
+version=v2, best_epochs=52, auc=0.9996
+d_model=512, num_heads=8, num_layers=4, dim_feedforward=1024
+tl_dropout=0.5, nn_dropout=0.5, lr=1e-06
+image_encoder_type=clip, input_shape=(24, 512)
+window_size=120, lag_sampling=5, sliding_stride=4
+              precision    recall  f1-score   support
+
+         0.0     0.9940    0.9991    0.9965      7500
+         1.0     0.9991    0.9940    0.9965      7500
+
+    accuracy                         0.9965     15000
+   macro avg     0.9965    0.9965    0.9965     15000
+weighted avg     0.9965    0.9965    0.9965     15000
+
+---------------------------------------------------------------------------
+version=v2, best_epochs=47, auc=0.9996
+d_model=512, num_heads=8, num_layers=2, dim_feedforward=1024
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-06
+image_encoder_type=clip, input_shape=(24, 512)
+window_size=120, lag_sampling=5, sliding_stride=4
+              precision    recall  f1-score   support
+
+         0.0     0.9942    0.9991    0.9966      7500
+         1.0     0.9991    0.9941    0.9966      7500
+
+    accuracy                         0.9966     15000
+   macro avg     0.9966    0.9966    0.9966     15000
+weighted avg     0.9966    0.9966    0.9966     15000
+
+---------------------------------------------------------------------------
+version=v2, best_epochs=51, auc=0.9996
+d_model=256, num_heads=16, num_layers=4, dim_feedforward=512
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-06
+image_encoder_type=clip, input_shape=(24, 512)
+window_size=120, lag_sampling=5, sliding_stride=4
+              precision    recall  f1-score   support
+
+         0.0     0.9942    0.9988    0.9965      7500
+         1.0     0.9988    0.9941    0.9965      7500
+
+    accuracy                         0.9965     15000
+   macro avg     0.9965    0.9965    0.9965     15000
+weighted avg     0.9965    0.9965    0.9965     15000
+
+---------------------------------------------------------------------------
+version=v3, best_epochs=25, auc=0.9997
+d_model=256, num_heads=16, num_layers=4, dim_feedforward=512
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-06
+image_encoder_type=clip, input_shape=(20, 512)
+window_size=120, lag_sampling=6, sliding_stride=3
+              precision    recall  f1-score   support
+
+         0.0     0.9951    0.9990    0.9970     12500
+         1.0     0.9990    0.9951    0.9970     12500
+
+    accuracy                         0.9970     25000
+   macro avg     0.9970    0.9970    0.9970     25000
+weighted avg     0.9970    0.9970    0.9970     25000
+
+---------------------------------------------------------------------------
+version=v3, best_epochs=17, auc=0.9994
+d_model=128, num_heads=16, num_layers=20, dim_feedforward=256
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-06
+image_encoder_type=clip, input_shape=(20, 512)
+window_size=120, lag_sampling=6, sliding_stride=3
+              precision    recall  f1-score   support
+
+         0.0     0.9919    0.9990    0.9955     12500
+         1.0     0.9990    0.9918    0.9954     12500
+
+    accuracy                         0.9954     25000
+   macro avg     0.9955    0.9954    0.9954     25000
+weighted avg     0.9955    0.9954    0.9954     25000
+
+---------------------------------------------------------------------------
+version=v3, best_epochs=26, auc=0.9997
+d_model=256, num_heads=16, num_layers=8, dim_feedforward=512
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-06
+image_encoder_type=clip, input_shape=(20, 512)
+window_size=120, lag_sampling=6, sliding_stride=3
+              precision    recall  f1-score   support
+
+         0.0     0.9945    0.9992    0.9968     12500
+         1.0     0.9992    0.9945    0.9968     12500
+
+    accuracy                         0.9968     25000
+   macro avg     0.9969    0.9968    0.9968     25000
+weighted avg     0.9969    0.9968    0.9968     25000
+
+---------------------------------------------------------------------------
+version=v3, best_epochs=31, auc=0.9997
+d_model=512, num_heads=16, num_layers=4, dim_feedforward=1024
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-06
+image_encoder_type=clip, input_shape=(20, 512)
+window_size=120, lag_sampling=6, sliding_stride=3
+              precision    recall  f1-score   support
+
+         0.0     0.9963    0.9987    0.9975     12500
+         1.0     0.9987    0.9963    0.9975     12500
+
+    accuracy                         0.9975     25000
+   macro avg     0.9975    0.9975    0.9975     25000
+weighted avg     0.9975    0.9975    0.9975     25000
+
+---------------------------------------------------------------------------

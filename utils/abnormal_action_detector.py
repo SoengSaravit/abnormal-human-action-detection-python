@@ -144,22 +144,34 @@ class AbnormalActionDetector():
         self.frame_histories = deque(maxlen=self.window_size)
         
         cap = cv2.VideoCapture(source)
+
+        total_num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
         majority_class_index = None
         majority_class = None
         confidence = None
+        frames = []
 
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
                 break
-            
+            frames.append(frame)
+
+        cap.release()
+        
+        for frame in frames:
             image = self.preprocess(Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))).unsqueeze(0).to(self.device)
             with torch.no_grad():
                 image_features = self.model.encode_image(image) if self.image_encoder_type == 'clip' else self.model(image)
             self.frame_histories.append(image_features)
-                
-            if len(self.frame_histories) == self.window_size:
+
+            # Check if we have enough frames to make a prediction 
+            # But, in case of the total number of frames is less than the window size, we make prediction when all frames are processed
+            if len(self.frame_histories) == self.window_size or (total_num_frames < self.window_size and len(self.frame_histories) == total_num_frames):
                 with torch.no_grad():
+                    if total_num_frames < self.window_size:
+                        self.window_size = total_num_frames
                     indices = np.linspace(0, self.window_size-1, self.effective_window_size, dtype=int)
                     input_tensors = [list(self.frame_histories)[i] for i in indices]
                     X = torch.stack(input_tensors, dim=0)
@@ -175,13 +187,12 @@ class AbnormalActionDetector():
                         y_pred = int(y_pred)
                         pred_classes = np.append(pred_classes, y_pred)
                         pred_confs[y_pred].append(conf_prob)
-                      
-        cap.release()
+
         # Determine the most frequent predicted class so far
         # check if there are any predictions
         if len(pred_classes) > 0:
             unique, counts = np.unique(pred_classes, return_counts=True)
-        # check if counts of abnormal class is greater than the threshold
+            # check if counts of abnormal class is greater than the threshold
             if len(unique) == 1:
                 majority_class_index = int(unique[0]) # this means there is only one class detected
             else:
