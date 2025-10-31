@@ -212,3 +212,5 @@ __marimo__/
 
 # Ignore all npz files
 *.npz
+
+*.mp4

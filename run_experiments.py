@@ -8,7 +8,7 @@ import os
 
 if __name__ == '__main__':
     image_encoder_type = "clip"  # "clip" or "vit"
-    model, model_version = ("transformer", "v1")
+    model, model_version = ("transformer", "v3")
     detector = AbnormalActionDetector(f"models/{model}_model_{model_version}.pt", 
                                     window_size=120,
                                     lag_sampling=5, # Lag Sampling Stride (which samples within a window)
