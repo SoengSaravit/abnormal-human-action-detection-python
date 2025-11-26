@@ -40,7 +40,7 @@ def extract_video_features(video_path, model, device):
         return None
 
     # Process frames in smaller batches to avoid GPU memory overflow
-    batch_size = 64  # Adjust batch size based on your GPU memory
+    batch_size = 32  # Adjust batch size based on your GPU memory
     video_features = []
 
     for i in range(0, len(frames), batch_size):
@@ -111,13 +111,14 @@ if __name__ == "__main__":
     # Save dataframe to csv
     # Since dataframe can be large, save to csv without index and split into multiple files if necessary
     print(f"Saving features to csv files in chunks...")
-    chunk_size = 200000  # Adjust based on your memory constraints
+    chunk_size = 100000  # Adjust based on your memory constraints
 
     for i in range(0, len(all_video_features), chunk_size):
+        print(f"Saving chunk {i//chunk_size} ...")
         df_features_chunk = pd.DataFrame(all_video_features[i:i+chunk_size])
         df_features_chunk['video_file_name'] = video_names[i:i+chunk_size]
         df_features_chunk['label'] = labels[i:i+chunk_size]
         df_features_chunk['subset'] = subsets[i:i+chunk_size]
-        df_features_chunk.to_csv(f"../datasets/video_frame_features_vit_part_{i//chunk_size}.csv", index=False)
+        df_features_chunk.to_csv(f"../datasets/vit/video_frame_features_vit_part_{i//chunk_size}.csv", index=False)
 
-    print("All video features extracted and saved to ../datasets/video_frame_features_vit.csv")
+    print("All video features extracted and saved to ../datasets/vit/video_frame_features_vit.csv")

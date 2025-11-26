@@ -1,0 +1,30 @@
+version=v1, best_epochs=42, auc=0.9952
+dropout=0.5, lr=1e-06
+hidden_size=128, num_layers=2
+image_encoder_type=vit, input_shape=(24, 768)
+window_size=120, lag_sampling=5, sliding_stride=4
+              precision    recall  f1-score   support
+
+           0     0.9422    0.9851    0.9632      7500
+           1     0.9844    0.9396    0.9615      7500
+
+    accuracy                         0.9623     15000
+   macro avg     0.9633    0.9623    0.9623     15000
+weighted avg     0.9633    0.9623    0.9623     15000
+
+---------------------------------------------------------------------------
+version=v2, best_epochs=20, auc=0.9939
+dropout=0.5, lr=1e-06
+hidden_size=128, num_layers=2
+image_encoder_type=clip, input_shape=(24, 512)
+window_size=120, lag_sampling=5, sliding_stride=4
+              precision    recall  f1-score   support
+
+           0     0.9762    0.9531    0.9645      7500
+           1     0.9542    0.9768    0.9653      7500
+
+    accuracy                         0.9649     15000
+   macro avg     0.9652    0.9649    0.9649     15000
+weighted avg     0.9652    0.9649    0.9649     15000
+
+---------------------------------------------------------------------------

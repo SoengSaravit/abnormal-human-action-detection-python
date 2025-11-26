@@ -328,3 +328,18 @@ window_size=120, lag_sampling=5, sliding_stride=4
 weighted avg     0.9850    0.9850    0.9850     15000
 
 ---------------------------------------------------------------------------
+version=v4, best_epochs=15, auc=0.9968
+d_model=256, num_heads=8, num_layers=4, dim_feedforward=512
+tl_dropout=0.3, nn_dropout=0.3, lr=1e-06
+image_encoder_type=vit, input_shape=(24, 768)
+window_size=120, lag_sampling=5, sliding_stride=4
+              precision    recall  f1-score   support
+
+         0.0     0.9677    0.9911    0.9793      7500
+         1.0     0.9908    0.9669    0.9787      7500
+
+    accuracy                         0.9790     15000
+   macro avg     0.9793    0.9790    0.9790     15000
+weighted avg     0.9793    0.9790    0.9790     15000
+
+---------------------------------------------------------------------------

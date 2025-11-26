@@ -180,6 +180,6 @@ if __name__ == "__main__":
         df_features_chunk['video_file_name'] = video_names[i:i+chunk_size]
         df_features_chunk['label'] = labels[i:i+chunk_size]
         df_features_chunk['subset'] = subsets[i:i+chunk_size]
-        df_features_chunk.to_csv(f"../datasets/video_frame_features_clip_part_{i//chunk_size}.csv", index=False)
+        df_features_chunk.to_csv(f"../datasets/clip/video_frame_features_clip_part_{i//chunk_size}.csv", index=False)
 
-    print("All video features extracted and saved to ../datasets/video_frame_features_clip.csv in chunks.")
+    print("All video features extracted and saved to ../datasets/clip/video_frame_features_clip.csv in chunks.")
