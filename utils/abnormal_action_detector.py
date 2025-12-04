@@ -109,10 +109,10 @@ class AbnormalActionDetector():
                 avg_fps = frame_count / (current_time - st)
             else:
                 avg_fps = avg_fps if 'avg_fps' in locals() else 0
-            # Draw the prediction text
+            # Draw the prediction text and make it responsive to the frame size
             if len(self.frame_histories) >= self.window_size:
-                cv2.rectangle(frame, (0, 0), (450 if majority_class_index == 1 else 430, 30), alert_color, -1)
-                cv2.putText(frame, f"Prediction: {majority_class}, Confidence: {confidence:.2f}%, FPS: {avg_fps:.2f}", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+                cv2.rectangle(frame, (0, 0), (int(video_width * 0.5) if majority_class_index == 1 else int(video_width * 0.475), int(video_height * 0.07)), alert_color, -1)
+                cv2.putText(frame, f"Prediction: {majority_class}, Confidence: {confidence:.2f}%, FPS: {avg_fps:.2f}", (int(video_width * 0.01), int(video_height * 0.04)), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
 
             if is_save_result:
                 out.write(frame)

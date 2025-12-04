@@ -6,6 +6,7 @@ import pandas as pd
 import os
 from utils.vlm_evaluation_metrics import compute_bleu_cider_meteor_single_ref
 import time
+from peft import PeftModel
 
 # Function to read video frames using OpenCV
 def read_video_opencv(video_path, num_frames=8):
@@ -42,7 +43,8 @@ def read_video_opencv(video_path, num_frames=8):
 # Function to run experiments with LLaVA-NeXT-Video model
 def run_experiments_llava(df_abnormal_videos):
     # Define model ID
-    model_id = "llava-hf/LLaVA-NeXT-Video-7B-hf"
+    # model_id = "llava-hf/LLaVA-NeXT-Video-7B-hf"
+    model_id = "saravit-soeng/llava-next-video-7b-hf-abnormal-action-fine-tuned-v4" # fine-tuned model
     device = "cuda" if torch.cuda.is_available() else "cpu"
     
     # Load the processor and model
@@ -122,7 +124,7 @@ def run_experiments_llava(df_abnormal_videos):
         'average_inference_time': average_inference_time_per_video
     })
 
-    df_results.to_csv('outputs/llava_next_video_7b_abnormal_videos_experiment_results.csv', index=False)
+    df_results.to_csv('outputs/llava_next_video_fine_tuned_7b_abnormal_videos_experiment_results_v4.csv', index=False)
     print("Inference results saved to CSV.")
 
 
@@ -219,5 +221,5 @@ if __name__ == '__main__':
     # read unseen abnormal video
     df_unseen_abnormal_videos = pd.read_csv("datasets/unseen_abnormal_videos_with_description.csv")
 
-    # run_experiments_llava(df_unseen_abnormal_videos)
+    run_experiments_llava(df_unseen_abnormal_videos)
     # run_experiments_smolvlm2(df_unseen_abnormal_videos)

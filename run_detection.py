@@ -24,10 +24,15 @@ if __name__ == '__main__':
     # video_source = "D:/6. Datasets/Fall-Dataset/video-fall-3.mp4"
     # video_source = "D:/6. Datasets/Fall-Dataset/video-fall-5.mp4"
     # video_source = "D:/6. Datasets/Fight-Dataset/fight-video-2.mp4"
-    video_source = "D:/6. Datasets/Fight-Dataset/C00_083_0003-C1.mp4"
+    # video_source = "D:/6. Datasets/Fight-Dataset/C00_083_0003-C1.mp4"
     # video_source = "D:/6. Datasets/Fight-Dataset/C00_008_0005-C1.mp4"
     # video_source = "D:/6. Datasets/SPHAR-Dataset-1.0/videos/hitting/bitint_push_0048.mp4"
-    video_source = "D:/6. Datasets/SPHAR-Dataset/videos/carcrash/uccrime_RoadAccidents140_x264.mp4"
+    # video_source = "D:/6. Datasets/SPHAR-Dataset/videos/carcrash/uccrime_RoadAccidents140_x264.mp4"
+
+    # video_source = "D:/6. Datasets/SPHAR-Dataset/unseen_abnormal_videos/casia_topdownview_p01p02_fight_a1.mp4"
+    # video_source = "D:/6. Datasets/SPHAR-Dataset/unseen_abnormal_videos/uccrime_Vandalism050_x264_trimmed.mp4"
+    # video_source = "D:/6. Datasets/SPHAR-Dataset/unseen_abnormal_videos/uccrime_Arson023_x264 - Trim.mp4"
+    video_source = "D:/6. Datasets/SPHAR-Dataset/unseen_abnormal_videos/uccrime_Shoplifting049_x264_trimmed.mp4"
 
     print(f"Processing video: {video_source}")
     image_encoder_type = "clip"  # "clip" or "vit"
@@ -38,5 +43,5 @@ if __name__ == '__main__':
                                     abnormal_threshold=0.05,
                                     image_encoder_type=image_encoder_type)
     
-    detector.detect_abnormal_action(video_source, is_save_result=True)
+    detector.detect_abnormal_action(video_source, is_save_result=False)
     # print(detector.get_abnormal_action_detection_results(source=video_source))
