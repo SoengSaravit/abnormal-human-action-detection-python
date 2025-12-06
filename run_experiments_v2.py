@@ -17,7 +17,7 @@ if __name__ == '__main__':
                                     image_encoder_type=image_encoder_type)
     
     # read unseen abnormal abnormal video
-    base_path = "D:/6. Datasets/SPHAR-Dataset/unseen_abnormal_videos"
+    base_path = "D:\\6. Datasets\\SPHAR-Dataset\\unseen_abnormal_videos"
     df_unseen_videos = pd.read_csv("datasets/unseen_videos_information.csv")
     df_abnormal_videos = df_unseen_videos[df_unseen_videos['label'] == 'abnormal']
     
@@ -45,28 +45,26 @@ if __name__ == '__main__':
             conditions.append("Normal") # video condition is normal
             print(f"==> Class: {action_class}, Confidence: {conf}")
     
-    # Randomly select augmented videos from unseen abnormal videos for testing various videos under jitter and blur conditions
-    augment_type = {"jitter": 95, "blur": 94} #  95 + 94 + 211 = 400 abnormal videos
-
-    for augment, count in augment_type.items():
-        for i, video in df_abnormal_videos.sample(n=count).iterrows():
-            video_name = video['video_file_name'].replace(".mp4", f"_augmented_{augment}.mp4")
-            video_source = os.path.join(base_path, video_name)
-            
-            class_idx, action_class, conf= detector.get_abnormal_action_detection_results(video_source)
-            
-            if class_idx is not None:
-                videos.append(video_name)
-                actions.append(video['video_type'])
-                class_indexes.append(class_idx)
-                action_classes.append(action_class)
-                confidences.append(conf)
-                ground_truths.append(1)
-                if augment == "jitter":
-                    conditions.append("Low Illumination")
-                elif augment == "blur":
-                    conditions.append("Low Resolution")
-                print(f"==> Class: {action_class}, Confidence: {conf}")
+    # process augmented videos
+    augment_type = ["low_illumination", "low_resolution", "partial_occlusion"]
+    video_path = "D:/6. Datasets/SPHAR-Dataset/augmented_videos_experiments"
+    for video_name in os.listdir(video_path):
+        video_source = os.path.join(video_path, video_name)
+        
+        class_idx, action_class, conf= detector.get_abnormal_action_detection_results(video_source)
+        
+        if class_idx is not None:
+            videos.append(video_name)
+            actions.append("Not Specified")
+            class_indexes.append(class_idx)
+            action_classes.append(action_class)
+            confidences.append(conf)
+            ground_truths.append(1)
+            for aug in augment_type:
+                if aug in video_name:
+                    conditions.append(aug.replace("_", " ").title())
+                    break
+            print(f"==> Class: {action_class}, Confidence: {conf}")
 
     df_results = pd.DataFrame({
         'video_name': videos,
@@ -74,7 +72,8 @@ if __name__ == '__main__':
         'ground_truth': ground_truths,
         'class_index': class_indexes,
         'action_class': action_classes,
-        'avg_confidence': confidences
+        'avg_confidence': confidences,
+        'video_condition': conditions,
     })
 
     print(f"Overall Accuracy: {accuracy_score(ground_truths, class_indexes)}")
